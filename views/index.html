@@ -9,12 +9,64 @@
   <script src="/components/header.js" defer></script>
   <script src="/components/footer.js" defer></script>
 </head>
+
   <header-component></header-component>
   
   <!-- main content -->
+  <div id="main" style="display: flex; flex-direction: row; justify-content: center;">
+    <div class="card">
+      <p id="movies" style="font-size: 40px; font-weight: bolder;"></p>
+      <p>
+        Movies Count
+      </p>
+    </div>
+
+    <div class="card">
+      <p id="people" style="font-size: 40px; font-weight: bolder;"></p>
+      <p>
+        people Count
+      </p>
+    </div>
+
+    <div class="card">
+      <p id="histories" style="font-size: 40px; font-weight: bolder;"></p>
+      <p>
+        History Count
+      </p>
+  </div>
 
   <footer-component></footer-component>
 </body>
 </html>
 
 <script src="/public/script.js"></script>
+<script>
+  fetch('/data/movies')
+  .then((response) => response.json())
+  .then((data) => {
+    if (data.length !== 0)
+      return document.getElementById('movies').innerHTML = data.length
+    return 0
+  })
+
+  fetch('/data/people')
+  .then((response) => response.json())
+  .then((data) => {
+    if (data.length !== 0){
+
+      return document.getElementById('people').innerHTML = data.length
+    }
+      
+    return 0
+  })
+
+  fetch('/data/histories')
+  .then((response) => response.json())
+  .then((data) => {
+    if (data.length !== 0){
+      return document.getElementById('histories').innerHTML = data.length
+    }
+    
+    return 0
+  })
+</script>

@@ -33,9 +33,9 @@ headerTemplate.innerHTML = `
   <div class="topnav">
     <a class="active" href="/">Dashboard</a>
     <div class="topnav-right">
-      <a href="/histories">History</a>
+      <a href="/history">History</a>
       <a href="/movies">Movies</a>
-      <a href="/peoples">People</a>
+      <a href="/people">People</a>
       <a href="/about">About</a>
     </div>
   </div>

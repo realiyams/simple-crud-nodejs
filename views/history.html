@@ -11,7 +11,7 @@
   <header-component></header-component>
 
   <div id="main">
-    <h1 id="title">List of all Histories</h1>
+    <h1 id="title">List of all History</h1>
     <div class="form">
       <table style="border: 1px solid black;">
         <tr>
@@ -61,7 +61,7 @@
 <script src="/public/script.js"></script>
 <script>
   const getHistories = () => {
-    fetch('/get/histories')
+    fetch('/data/histories')
       .then((response) => response.json())
       .then((data) => {
 
@@ -153,7 +153,7 @@
   const deleteHistory = (id) => {
     let text = 'Are you sure want to delete ?'
     if (confirm(text)) {
-      fetch('/get/histories', {
+      fetch('/data/histories', {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
@@ -169,7 +169,7 @@
   }
 
   const getMovies = () => {
-    fetch('/get/movies')
+    fetch('/data/movies')
     .then((response) => response.json())
     .then((data) => {
       let movie = document.getElementById('movie')
@@ -186,8 +186,8 @@
     })
   }
 
-  const getPeoples = () => {
-    fetch('/get/peoples')
+  const getPeople = () => {
+    fetch('/data/people')
     .then((response) => response.json())
     .then((data) => {
       let people = document.getElementById('people')
@@ -206,5 +206,5 @@
 
   getHistories()
   getMovies()
-  getPeoples()
+  getPeople()
 </script>

@@ -30,7 +30,7 @@
 <script src="/public/script.js"></script>
 <script>
   const getMovies = () => {
-    fetch('/get/movies')
+    fetch('/data/movies')
       .then((response) => response.json())
       .then((data) => {
         if (data.length !== 0) {
@@ -89,7 +89,7 @@
       if (movie === '') 
         return alert('no text added')
 
-      fetch('/get/movies', {
+      fetch('/data/movies', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
@@ -108,7 +108,7 @@
     const deleteMovie = (id, movie) => {
       let text = 'Are you sure want to delete "' + movie + '" ?'
       if (confirm(text)) {
-        fetch('/get/movies', {
+        fetch('/data/movies', {
           method: 'DELETE',
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
@@ -125,7 +125,7 @@
     const editMovie = (id, movie) => {
       let newMovie = prompt('Enter new movie: ', movie)
       if (newMovie !== null && newMovie !== '' && newMovie !== movie) {
-        fetch('/get/movies', {
+        fetch('/data/movies', {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
