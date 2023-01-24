@@ -1,0 +1,23 @@
+{
+  "name": "simple_crud_nodejs",
+  "version": "1.0.0",
+  "description": "create a simple crud application using nodejs",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha",
+    "dev": "nodemon server",
+    "start": "node server"
+  },
+  "keywords": [
+    "nodejs"
+  ],
+  "type": "module",
+  "author": "Ilham",
+  "license": "ISC",
+  "dependencies": {
+    "chai": "^4.3.7",
+    "dotenv": "^16.0.3",
+    "mocha": "^10.2.0",
+    "mysql": "^2.18.1"
+  }
+}

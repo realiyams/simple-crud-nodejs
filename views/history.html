@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Histories</title>
+  <link rel="stylesheet" href="/public/style.css" type="text/css">
+  <script src="/components/header.js" defer></script>
+</head>
+  <header-component></header-component>
+
+  <div id="main">
+    <h1 id="title">List of all Histories</h1>
+    <div class="form">
+      <table style="border: 1px solid black;">
+        <tr>
+          <td colspan="2" style="color: #f2f2f2;text-align: center;padding: 14px 16px; background-color: #03915d;">
+            Add New History
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <label for="movie">Movie</label>
+          </td>
+          <td>
+            : <select name="movie" id="movie" style="width: 80%; padding: 0;">
+              <option selected="true" disabled="disabled" value="" style="text-align: center;">-- select --</option>
+              
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <label for="people">People</label>
+          </td>
+          <td>
+            : <select name="people" id="people" style="width: 80%;">
+              <option selected="true" disabled="disabled" value="" style="text-align: center;">-- select --</option>
+              
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2">
+            <button class="button" onclick="submit()">Add</button>
+          </td>
+        </tr>
+      </table>
+
+    </div>
+
+    <div id="data">
+
+    </div>
+  </div>
+
+</body>
+</html>
+
+<script src="/public/script.js"></script>
+<script>
+  const getHistories = () => {
+    fetch('/get/histories')
+      .then((response) => response.json())
+      .then((data) => {
+
+        if (data.length !== 0) {
+          const table = document.createElement('table')
+          table.setAttribute('id', 'data')
+          
+          let tr = document.createElement('tr'),   
+            td1 = document.createElement('th'),
+            td2 = document.createElement('th'),
+            td3 = document.createElement('th'),
+            td4 = document.createElement('th'),
+            td5 = document.createElement('th'),
+            text1 = document.createTextNode('Id'),
+            text2 = document.createTextNode('Movie Id'),
+            text3 = document.createTextNode('People Id'),
+            text4 = document.createTextNode('Date'),
+            text5 = document.createTextNode('Action')
+  
+          td1.appendChild(text1)
+          td2.appendChild(text2)
+          td3.appendChild(text3)
+          td4.appendChild(text4)
+          td5.appendChild(text5)
+          tr.appendChild(td1)
+          tr.appendChild(td2)
+          tr.appendChild(td3)
+          tr.appendChild(td4)
+          tr.appendChild(td5)
+          table.appendChild(tr)
+  
+          for (let i = 0; i < data.length; i++){
+              let tr = document.createElement('tr'),   
+                td1 = document.createElement('td'),
+                td2 = document.createElement('td'), 
+                td3 = document.createElement('td'),
+                td4 = document.createElement('td'),
+                td5 = document.createElement('td'),
+                text1 = document.createTextNode(data[i].id),
+                text2 = document.createTextNode(data[i].movie_id),
+                text3 = document.createTextNode(data[i].people_id),
+                text4 = document.createTextNode(data[i].date),
+                button1 = document.createElement('button'),
+                button2 = document.createElement('button')
+
+              button1.setAttribute('onclick', 'editPeople(' + data[i].id + ', "' + data[i].name + '")')
+              button1.textContent = 'Edit'
+              button2.setAttribute('onclick', 'deletePeople(' + data[i].id + ', "' + data[i].name + '")')
+              button2.textContent = 'Delete'
+  
+              td1.appendChild(text1)
+              td2.appendChild(text2)
+              td3.appendChild(text3)
+              td4.appendChild(text4)
+              td5.appendChild(button1)
+              td5.appendChild(button2)
+              tr.appendChild(td1)
+              tr.appendChild(td2)
+              tr.appendChild(td3)
+              tr.appendChild(td4)
+              tr.appendChild(td5)
+  
+              table.appendChild(tr)
+          }
+          document.getElementById('main').appendChild(table)
+          
+        }
+      })
+  }
+
+  const submit = () => {
+    let movie = document.getElementById('movie').value,
+      people = document.getElementById('people').value
+
+    console.log(movie)
+    console.log(people)
+
+    if (movie === '' || people === '') 
+      return alert('another input required')
+
+  
+    fetch('/get/histories', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+      },
+      body: new URLSearchParams({
+        'movie_id': movie,
+        'people_id': people
+      }) 
+    })
+
+    document.getElementById('data').remove()
+    getHistories()
+  }
+
+  const deletePeople = (id, name) => {
+    let text = 'Are you sure want to delete "' + name + '" ?'
+    if (confirm(text)) {
+      fetch('/get/peoples', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+        },
+        body: new URLSearchParams({
+          'id': id
+        })
+      })
+      document.getElementById('data').remove()
+      getPeoples()
+    }
+  }
+
+  const editPeople = (id, name) => {
+    let newName = prompt('Enter new name: ', name)
+    if (newName !== null && newName !== '' && newName !== name) {
+      fetch('/get/peoples', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+        },
+        body: new URLSearchParams({
+          'id': id,
+          'newName': newName
+        })
+      })
+      
+      document.getElementById('data').remove()
+      getPeoples()
+    }
+  }
+
+  const getMovies = () => {
+    fetch('/get/movies')
+    .then((response) => response.json())
+    .then((data) => {
+      let movie = document.getElementById('movie')
+      
+      for (let i = 0; i < data.length; i++) {
+        let option = document.createElement('option'),
+          node = document.createTextNode(data[i].movie)
+
+        option.appendChild(node)
+        option.setAttribute('value', data[i].id)
+
+        movie.appendChild(option)
+      }
+    })
+  }
+
+  const getPeoples = () => {
+    fetch('/get/peoples')
+    .then((response) => response.json())
+    .then((data) => {
+      let people = document.getElementById('people')
+      
+      for (let i = 0; i < data.length; i++) {
+        let option = document.createElement('option'),
+          node = document.createTextNode(data[i].name)
+
+        option.appendChild(node)
+        option.setAttribute('value', data[i].id)
+
+        people.appendChild(option)
+      }
+    })
+  }
+
+  getHistories()
+  getMovies()
+  getPeoples()
+</script>

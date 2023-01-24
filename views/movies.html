@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Movies</title>
+  <link rel="stylesheet" href="/public/style.css" type="text/css">
+  <script src="/components/header.js" defer></script>
+</head>
+  <header-component></header-component>
+
+  <div id="main">
+    <h1 id="title">List of all movies</h1>
+
+    <div class="form">
+      <label for="movie">Add New Movie : </label>
+      <input id="movie" type="text" name="movie" required />
+      <button class="button" onclick="submit()">Add</button>
+    </div>
+
+    <div id="data">
+      
+    </div>
+  </div>
+
+</body>
+</html>
+
+<script src="/public/script.js"></script>
+<script>
+  const getMovies = () => {
+    fetch('/get/movies')
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.length !== 0) {
+          const table = document.createElement('table')
+          table.setAttribute('id', 'data')
+          
+          let tr = document.createElement('tr'),   
+          td1 = document.createElement('th'),
+          td2 = document.createElement('th'),
+          td3 = document.createElement('th'),
+          text1 = document.createTextNode('Id'),
+          text2 = document.createTextNode('Movies'),
+          text3 = document.createTextNode('Action')
+  
+          td1.appendChild(text1)
+          td2.appendChild(text2)
+          td3.appendChild(text3)
+          tr.appendChild(td1)
+          tr.appendChild(td2)
+          tr.appendChild(td3)
+          table.appendChild(tr)
+  
+          for (let i = 0; i < data.length; i++){
+              let tr = document.createElement('tr'),   
+                td1 = document.createElement('td'),
+                td2 = document.createElement('td'),
+                td3 = document.createElement('td')
+                text1 = document.createTextNode(data[i].id),
+                text2 = document.createTextNode(data[i].movie),
+                button1 = document.createElement('button'),
+                button2 = document.createElement('button'),
+
+              button1.setAttribute('onclick', 'editMovie(' + data[i].id + ', "' + data[i].movie + '")')
+              button1.textContent = 'Edit'
+              button2.setAttribute('onclick', 'deleteMovie(' + data[i].id + ', "' + data[i].movie + '")')
+              button2.textContent = 'Delete'
+  
+              td1.appendChild(text1)
+              td2.appendChild(text2)
+              td3.appendChild(button1)
+              td3.appendChild(button2)
+              tr.appendChild(td1)
+              tr.appendChild(td2)
+              tr.appendChild(td3)
+  
+              table.appendChild(tr)
+          }
+          document.getElementById('main').appendChild(table)
+        }
+      })
+  }
+
+    const submit = () => {
+      let movie = document.getElementById('movie').value
+
+      if (movie === '') 
+        return alert('no text added')
+
+      fetch('/get/movies', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+        },
+        body: new URLSearchParams({
+          'movie': movie
+        })
+      })
+
+      document.getElementById('data').remove()
+      getMovies()
+    }
+
+    const deleteMovie = (id, movie) => {
+      let text = 'Are you sure want to delete "' + movie + '" ?'
+      if (confirm(text)) {
+        fetch('/get/movies', {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+          },
+          body: new URLSearchParams({
+            'id': id
+          })
+        })
+        document.getElementById('data').remove()
+        getMovies()
+      }
+    }
+
+    const editMovie = (id, movie) => {
+      let newMovie = prompt('Enter new movie: ', movie)
+      if (newMovie !== null && newMovie !== '' && newMovie !== movie) {
+        fetch('/get/movies', {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+          },
+          body: new URLSearchParams({
+            'id': id,
+            'newMovie': newMovie
+          })
+        })
+        document.getElementById('data').remove()
+        getMovies()
+      }
+    }
+
+    document.getElementById('data').remove()
+    getMovies()
+</script>

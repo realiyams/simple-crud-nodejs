@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Peoples</title>
+  <link rel="stylesheet" href="/public/style.css" type="text/css">
+  <script src="/components/header.js" defer></script>
+</head>
+  <header-component></header-component>
+
+  <div id="main">
+    <h1 id="title">List of all Peoples</h1>
+    <div class="form">
+      <table style="border: 1px solid black;">
+        <tr>
+          <td colspan="2" style="color: #f2f2f2;text-align: center;padding: 14px 16px; background-color: #03915d;">
+            Add New People
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <label for="people">name</label>
+          </td>
+          <td>
+            : <input id="people" type="text" name="people" required />
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <label for="salutation">salutation</label>
+          </td>
+          <td>
+            : <select name="salutation" id="salutation" style="width: 80%;">
+              <option selected="true" disabled="disabled" value="" style="text-align: center;">-- select --</option>
+              
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2">
+            <button class="button" onclick="submit()">Add</button>
+          </td>
+        </tr>
+      </table>
+
+    </div>
+
+    <div id="data">
+
+    </div>
+  </div>
+
+</body>
+</html>
+
+<script src="/public/script.js"></script>
+<script>
+  const getPeoples = () => {
+    fetch('/get/peoples')
+      .then((response) => response.json())
+      .then((data) => {
+
+        if (data.length !== 0) {
+          const table = document.createElement('table')
+          table.setAttribute('id', 'data')
+          
+          let tr = document.createElement('tr'),   
+            td1 = document.createElement('th'),
+            td2 = document.createElement('th'),
+            td3 = document.createElement('th'),
+            td4 = document.createElement('th'),
+            td5 = document.createElement('th'),
+            text1 = document.createTextNode('Id'),
+            text2 = document.createTextNode('Salutation Id'),
+            text3 = document.createTextNode('Name'),
+            text4 = document.createTextNode('Address'),
+            text5 = document.createTextNode('Action')
+  
+          td1.appendChild(text1)
+          td2.appendChild(text2)
+          td3.appendChild(text3)
+          td4.appendChild(text4)
+          td5.appendChild(text5)
+          tr.appendChild(td1)
+          tr.appendChild(td2)
+          tr.appendChild(td3)
+          tr.appendChild(td4)
+          tr.appendChild(td5)
+          table.appendChild(tr)
+  
+          for (let i = 0; i < data.length; i++){
+              let tr = document.createElement('tr'),   
+                td1 = document.createElement('td'),
+                td2 = document.createElement('td'),
+                td3 = document.createElement('td'),
+                td4 = document.createElement('td'),
+                td5 = document.createElement('td'),
+                text1 = document.createTextNode(data[i].id),
+                text2 = document.createTextNode(data[i].salutation_id),
+                text3 = document.createTextNode(data[i].name),
+                button1 = document.createElement('button'),
+                button2 = document.createElement('button'),
+                button3 = document.createElement('button'),
+                orderedList = document.createElement('ol')
+
+              button1.setAttribute('onclick', 'editPeople(' + data[i].id + ', "' + data[i].name + '")')
+              button1.textContent = 'Edit'
+              button2.setAttribute('onclick', 'deletePeople(' + data[i].id + ', "' + data[i].name + '")')
+              button2.textContent = 'Delete'
+              button3.setAttribute('onclick', 'addAddress(' + data[i].id + ', "' + data[i].name + '")')
+              button3.textContent = 'Add Address'
+
+              orderedList.setAttribute('id', data[i].id)
+              orderedList.style.textAlign = 'left'
+  
+              td1.appendChild(text1)
+              td2.appendChild(text2)
+              td3.appendChild(text3)
+              td4.appendChild(orderedList)
+              td4.appendChild(button3)
+              td5.appendChild(button1)
+              td5.appendChild(button2)
+              tr.appendChild(td1)
+              tr.appendChild(td2)
+              tr.appendChild(td3)
+              tr.appendChild(td4)
+              tr.appendChild(td5)
+  
+              table.appendChild(tr)
+          }
+          document.getElementById('main').appendChild(table)
+          
+        }
+
+        fetch('/get/address')
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.length !== 0) {
+            for(let i = 0; i < data.length; i++) {
+              let address = document.getElementById(data[i].people_id),
+                list = document.createElement('li'),
+                text = document.createTextNode(data[i].address)
+              
+              list.appendChild(text)
+              address.appendChild(list)
+
+              noMoreThan3Address(address)
+            }
+          }
+        })
+      })
+  }
+  
+
+  const addAddress = (id, name) => {
+    let newAddress = prompt('Enter new address for ' + name + ' : ', 'new address')
+
+    if (newAddress !== null && newAddress !== '' && newAddress !== 'new address'){
+      fetch('/get/address', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+        },
+        body: new URLSearchParams({
+          'people_id': id,
+          'address': newAddress
+        }) 
+      })
+
+      document.getElementById('data').remove()
+      getPeoples()
+    }
+  }
+
+  const submit = () => {
+    let name = document.getElementById('people').value,
+      salutation = document.getElementById('salutation').value
+
+    if (name === '' && salutation === '') 
+      return alert('input required')
+
+    if (name === '') 
+      return alert('no name added')
+    
+    if (salutation === '') 
+      return alert('salutation required')
+
+    fetch('/get/peoples', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+      },
+      body: new URLSearchParams({
+        'salutation_id': parseInt(salutation),
+        'name': name
+      }) 
+    })
+
+    document.getElementById('data').remove()
+    getPeoples()
+  }
+
+  const deletePeople = (id, name) => {
+    let text = 'Are you sure want to delete "' + name + '" ?'
+    if (confirm(text)) {
+      fetch('/get/peoples', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+        },
+        body: new URLSearchParams({
+          'id': id
+        })
+      })
+      document.getElementById('data').remove()
+      getPeoples()
+    }
+  }
+
+  const editPeople = (id, name) => {
+    let newName = prompt('Enter new name: ', name)
+    if (newName !== null && newName !== '' && newName !== name) {
+      fetch('/get/peoples', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+        },
+        body: new URLSearchParams({
+          'id': id,
+          'newName': newName
+        })
+      })
+      
+      document.getElementById('data').remove()
+      getPeoples()
+    }
+  }
+
+  const getSalutations = () => {
+    fetch('/get/salutations')
+    .then((response) => response.json())
+    .then((data) => {
+      let salutation = document.getElementById('salutation')
+      
+      for (let i = 0; i < data.length; i++) {
+        let option = document.createElement('option'),
+          node = document.createTextNode(data[i].salutation)
+
+        option.appendChild(node)
+        option.setAttribute('value', data[i].id)
+
+        salutation.appendChild(option)
+      }
+    })
+  }
+
+  const noMoreThan3Address = (address) => {
+    if (address.children.length >= 3)
+      address.nextSibling.style.display = 'none'
+  }
+
+  document.getElementById('data').remove()
+  getPeoples()
+  getSalutations()
+</script>
