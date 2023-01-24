@@ -9,33 +9,36 @@
   <script src="/components/header.js" defer></script>
   <script src="/components/footer.js" defer></script>
 </head>
-
+<body style="height: 100vh;">
   <header-component></header-component>
   
   <!-- main content -->
-  <div id="main" style="display: flex; flex-direction: row; justify-content: center;">
-    <div class="card">
+  <div id="main" style="height: 80%; display: flex; flex-direction: row; justify-content: center; flex-wrap:wrap; align-items: center;">
+    
+    <div class="card" style="cursor: pointer;" onclick="window.location='/movies'">
       <p id="movies" style="font-size: 40px; font-weight: bolder;"></p>
       <p>
         Movies Count
       </p>
     </div>
 
-    <div class="card">
+    <div class="card" style="cursor: pointer;" onclick="window.location='/people'">
       <p id="people" style="font-size: 40px; font-weight: bolder;"></p>
       <p>
-        people Count
+        People Count
       </p>
     </div>
 
-    <div class="card">
+    <div class="card" style="cursor: pointer;" onclick="window.location='/history'">
       <p id="histories" style="font-size: 40px; font-weight: bolder;"></p>
       <p>
         History Count
       </p>
+    </div>
+
   </div>
 
-  <footer-component></footer-component>
+  <!-- <footer-component></footer-component> -->
 </body>
 </html>
 
