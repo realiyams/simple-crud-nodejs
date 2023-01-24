@@ -28,14 +28,12 @@ const history = (req, res) => {
       body = Buffer.concat(body).toString()
       
       let history = body.split('&')
-      console.log(history)
       for (let i = 0; i < history.length; i++) {
         history[i] = history[i].split('=')
       }
       const date = new Date().toLocaleString().split(',')[0]
-      console.log(date)
 
-      connection.query('INSERT INTO histories(movie_id, people_id, date) VALUES(' + parseInt(history[0][1]) + ', '+ parseInt(history[1][1]) +', ' + date + ' )', (err, result) => {
+      connection.query('INSERT INTO histories(movie_id, people_id, date) VALUES(' + parseInt(history[0][1]) + ', '+ parseInt(history[1][1]) +', DATE(NOW()) )', (err, result) => {
         if (err) throw err
 
         resObj['id'] = result.insertId

@@ -99,7 +99,9 @@
         })
       })
 
-      document.getElementById('data').remove()
+      if(document.getElementById('data')){
+        document.getElementById('data').remove()
+      }
       getMovies()
     }
 

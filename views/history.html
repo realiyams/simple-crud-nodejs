@@ -103,21 +103,17 @@
                 text1 = document.createTextNode(data[i].id),
                 text2 = document.createTextNode(data[i].movie_id),
                 text3 = document.createTextNode(data[i].people_id),
-                text4 = document.createTextNode(data[i].date),
-                button1 = document.createElement('button'),
-                button2 = document.createElement('button')
+                text4 = document.createTextNode(new Date(data[i].date).toDateString()),
+                button1 = document.createElement('button')
 
-              button1.setAttribute('onclick', 'editPeople(' + data[i].id + ', "' + data[i].name + '")')
-              button1.textContent = 'Edit'
-              button2.setAttribute('onclick', 'deletePeople(' + data[i].id + ', "' + data[i].name + '")')
-              button2.textContent = 'Delete'
-  
+              button1.setAttribute('onclick', 'deleteHistory(' + data[i].id + ', "' + data[i].name + '")')
+              button1.textContent = 'Delete'
+
               td1.appendChild(text1)
               td2.appendChild(text2)
               td3.appendChild(text3)
               td4.appendChild(text4)
               td5.appendChild(button1)
-              td5.appendChild(button2)
               tr.appendChild(td1)
               tr.appendChild(td2)
               tr.appendChild(td3)
@@ -136,13 +132,9 @@
     let movie = document.getElementById('movie').value,
       people = document.getElementById('people').value
 
-    console.log(movie)
-    console.log(people)
-
     if (movie === '' || people === '') 
       return alert('another input required')
 
-  
     fetch('/get/histories', {
       method: 'POST',
       headers: {
@@ -158,10 +150,10 @@
     getHistories()
   }
 
-  const deletePeople = (id, name) => {
-    let text = 'Are you sure want to delete "' + name + '" ?'
+  const deleteHistory = (id) => {
+    let text = 'Are you sure want to delete ?'
     if (confirm(text)) {
-      fetch('/get/peoples', {
+      fetch('/get/histories', {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
@@ -170,27 +162,9 @@
           'id': id
         })
       })
-      document.getElementById('data').remove()
-      getPeoples()
-    }
-  }
-
-  const editPeople = (id, name) => {
-    let newName = prompt('Enter new name: ', name)
-    if (newName !== null && newName !== '' && newName !== name) {
-      fetch('/get/peoples', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
-        },
-        body: new URLSearchParams({
-          'id': id,
-          'newName': newName
-        })
-      })
       
       document.getElementById('data').remove()
-      getPeoples()
+      getHistories()
     }
   }
 
