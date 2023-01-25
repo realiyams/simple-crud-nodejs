@@ -38,8 +38,7 @@ class pages {
   }
 
   about(req, res) {
-    res.write('about page')
-    res.end()
+    this.readpages('/views/about.html', req, res)
   }
 }
 

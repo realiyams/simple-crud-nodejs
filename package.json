@@ -11,7 +11,7 @@
     "nodejs"
   ],
   "type": "module",
-  "author": "Ilham",
+  "author": "Realiyams",
   "license": "ISC",
   "dependencies": {
     "dotenv": "^16.0.3",
